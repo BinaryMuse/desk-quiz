@@ -15,7 +15,7 @@ mod.factory 'authentication', ($http, $q) ->
   logout: ->
     $http.delete('/api/session')
 
-mod.controller 'AuthenticationController', ($scope, authentication, currentUser) ->
+mod.controller 'AuthenticationController', ($scope, $location, authentication, currentUser) ->
   $scope.currentUser = currentUser
   $scope.auth =
     username: ''
@@ -24,11 +24,16 @@ mod.controller 'AuthenticationController', ($scope, authentication, currentUser)
 
   $scope.login = ->
     return unless $scope.authForm.$valid
-    success = (data) -> currentUser.username = data.username
-    failure = -> $scope.auth.error = 'That password is invalid.'
+    $scope.auth.error = null
+    success = (data) ->
+      currentUser.username = data.username
+      $location.path '/quiz'
+    failure = ->
+      $scope.auth.error = 'That password is invalid.'
     authentication.login($scope.auth.username, $scope.auth.password)
       .then(success, failure)
 
   $scope.logout = ->
     authentication.logout()
     currentUser.username = null
+    $location.path '/'

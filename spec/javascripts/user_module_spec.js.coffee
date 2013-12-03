@@ -15,39 +15,41 @@ describe 'the deskquiz.user module', ->
       $httpBackend.verifyNoOutstandingExpectation()
       $httpBackend.verifyNoOutstandingRequest()
 
-    it 'returns a promise resolving to the user data when successful', inject (authentication) ->
-      postData = username: 'user', password: 'pass'
-      userData = username: 'user'
-      $httpBackend.expectPOST('/api/session', postData)
-        .respond(201, userData)
+    describe '#login', ->
+      it 'returns a promise resolving to the user data when successful', inject (authentication) ->
+        postData = username: 'user', password: 'pass'
+        userData = username: 'user'
+        $httpBackend.expectPOST('/api/session', postData)
+          .respond(201, userData)
 
-      promise = authentication.login('user', 'pass')
-      success = jasmine.createSpy('success')
-      failure = jasmine.createSpy('failure')
-      promise.then(success, failure)
-      $httpBackend.flush()
-      expect(success).toHaveBeenCalledWith(userData)
-      expect(failure).not.toHaveBeenCalled()
+        promise = authentication.login('user', 'pass')
+        success = jasmine.createSpy('success')
+        failure = jasmine.createSpy('failure')
+        promise.then(success, failure)
+        $httpBackend.flush()
+        expect(success).toHaveBeenCalledWith(userData)
+        expect(failure).not.toHaveBeenCalled()
 
-    it 'returns a promise rejected with an error message when unsuccessful', inject (authentication) ->
-      postData = username: 'user', password: 'badpass'
-      $httpBackend.expectPOST('/api/session', postData)
-        .respond(401)
+      it 'returns a promise rejected with an error message when unsuccessful', inject (authentication) ->
+        postData = username: 'user', password: 'badpass'
+        $httpBackend.expectPOST('/api/session', postData)
+          .respond(401)
 
-      promise = authentication.login('user', 'badpass')
-      success = jasmine.createSpy('success')
-      failure = jasmine.createSpy('failure')
-      promise.then(success, failure)
-      $httpBackend.flush()
-      expect(success).not.toHaveBeenCalled()
-      expect(failure).toHaveBeenCalledWith('Invalid password.')
+        promise = authentication.login('user', 'badpass')
+        success = jasmine.createSpy('success')
+        failure = jasmine.createSpy('failure')
+        promise.then(success, failure)
+        $httpBackend.flush()
+        expect(success).not.toHaveBeenCalled()
+        expect(failure).toHaveBeenCalledWith('Invalid password.')
 
-    it 'logs out', inject (authentication) ->
-      $httpBackend.expectDELETE('/api/session')
-        .respond(204)
+    describe '#logout', ->
+      it 'logs out', inject (authentication) ->
+        $httpBackend.expectDELETE('/api/session')
+          .respond(204)
 
-      authentication.logout()
-      $httpBackend.flush()
+        authentication.logout()
+        $httpBackend.flush()
 
   describe 'AuthenticationController', ->
     [$rootScope, $scope, currentUser, authentication, $controller] = [undefined]
@@ -64,6 +66,9 @@ describe 'the deskquiz.user module', ->
       expect($scope.currentUser).toEqual(currentUser)
 
     describe 'when logging in', ->
+      beforeEach ->
+        $scope.authForm = $valid: true
+
       it 'returns without calling authentication#login if the form is invalid', ->
         spyOn(authentication, 'login').andCallThrough()
         $scope.authForm = $valid: false
@@ -73,14 +78,18 @@ describe 'the deskquiz.user module', ->
 
       it 'calls authentication#login', ->
         spyOn(authentication, 'login').andCallThrough()
-        $scope.authForm = $valid: true
 
         $scope.auth.username = 'username'
         $scope.auth.password = 'password'
         $scope.login()
         expect(authentication.login).toHaveBeenCalledWith('username', 'password')
 
-    describe 'when logging in successfully with #login', ->
+      it 'clears any existing error message', ->
+        $scope.auth.error = 'omg wat did you do'
+        $scope.login()
+        expect($scope.auth.error).toEqual(null)
+
+    describe 'when logging in successfully', ->
       beforeEach inject ($q) ->
         $scope.authForm = $valid: true
         spyOn(authentication, 'login').andCallFake (username, password) ->
@@ -94,7 +103,12 @@ describe 'the deskquiz.user module', ->
         $rootScope.$apply()
         expect(currentUser.username).toEqual('username')
 
-    describe 'when logging in unsuccessfully with #login', ->
+      it 'redirects to the quiz page', inject ($location) ->
+        $scope.login()
+        $rootScope.$apply()
+        expect($location.path()).toEqual('/quiz')
+
+    describe 'when logging in unsuccessfully', ->
       beforeEach inject ($q) ->
         $scope.authForm = $valid: true
         spyOn(authentication, 'login').andCallFake (username, password) ->
@@ -107,7 +121,7 @@ describe 'the deskquiz.user module', ->
         $rootScope.$apply()
         expect($scope.auth.error).toMatch(/invalid/)
 
-    describe 'when logging out with #logout', ->
+    describe 'when logging out', ->
       beforeEach ->
         spyOn(authentication, 'logout')
 
@@ -120,3 +134,8 @@ describe 'the deskquiz.user module', ->
         currentUser.username = 'user'
         $scope.logout()
         expect(currentUser.username).toEqual(null)
+
+      it 'redirects to the index page', inject ($location) ->
+        $scope.logout()
+        $rootScope.$apply()
+        expect($location.path()).toEqual('/')
