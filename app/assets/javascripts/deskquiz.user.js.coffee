@@ -23,6 +23,7 @@ mod.controller 'AuthenticationController', ($scope, authentication, currentUser)
     error: ''
 
   $scope.login = ->
+    return unless $scope.authForm.$valid
     success = (data) -> currentUser.username = data.username
     failure = -> $scope.auth.error = 'That password is invalid.'
     authentication.login($scope.auth.username, $scope.auth.password)

@@ -64,8 +64,16 @@ describe 'the deskquiz.user module', ->
       expect($scope.currentUser).toEqual(currentUser)
 
     describe 'when logging in', ->
+      it 'returns without calling authentication#login if the form is invalid', ->
+        spyOn(authentication, 'login').andCallThrough()
+        $scope.authForm = $valid: false
+
+        $scope.login()
+        expect(authentication.login).not.toHaveBeenCalled()
+
       it 'calls authentication#login', ->
         spyOn(authentication, 'login').andCallThrough()
+        $scope.authForm = $valid: true
 
         $scope.auth.username = 'username'
         $scope.auth.password = 'password'
@@ -74,6 +82,7 @@ describe 'the deskquiz.user module', ->
 
     describe 'when logging in successfully with #login', ->
       beforeEach inject ($q) ->
+        $scope.authForm = $valid: true
         spyOn(authentication, 'login').andCallFake (username, password) ->
           deferred = $q.defer()
           deferred.resolve(username: username)
@@ -87,6 +96,7 @@ describe 'the deskquiz.user module', ->
 
     describe 'when logging in unsuccessfully with #login', ->
       beforeEach inject ($q) ->
+        $scope.authForm = $valid: true
         spyOn(authentication, 'login').andCallFake (username, password) ->
           deferred = $q.defer()
           deferred.reject('Invalid password.')
