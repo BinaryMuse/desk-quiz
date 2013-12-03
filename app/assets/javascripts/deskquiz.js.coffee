@@ -12,3 +12,5 @@ app.config ($locationProvider, $routeProvider) ->
   $routeProvider.when '/',
     templateUrl: '/templates/index'
     controller: 'AuthenticationController'
+  .when '/quiz',
+    templateUrl: '/templates/quiz'
