@@ -3,6 +3,7 @@ DeskQuiz::Application.routes.draw do
     resource :session, only: [:create, :destroy]
   end
   get '/templates/*template' => 'templates#show', format: false
+  get '*path' => 'static#show'
   root to: 'static#show'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
