@@ -18,6 +18,9 @@
       .row
         .large-12.columns
           %input(type='password' placeholder='Password' ng-model='auth.password' required)
+      .row(ng-show='auth.error')
+        .large-12.columns
+          %p.error {{auth.error}}
       .row
         .large-12.columns
           %button.right(ng-class='{disabled: !authForm.$valid}') Log In/Register
