@@ -6,25 +6,4 @@
     = javascript_include_tag "application"
     = csrf_meta_tags
   %body
-    = yield
-    .row
-      .large-12.columns
-        %h1 Desk-Quiz
-        %h3.subheader
-          How's your front-end dev knowledge? Take our quiz and find out!
-        %hr
-    .row
-      %form.large-7.large-centered.columns
-        .panel
-          %h4 Log in or register now to test your knowlege
-          %h4
-            %small Your account will be created automatically if it does not yet exist
-          .row
-            .large-12.columns
-              %input(type='email' placeholder='Email address')
-          .row
-            .large-12.columns
-              %input(type='password' placeholder='Password')
-          .row
-            .large-12.columns
-              %button.right Log In/Register
+    %div(ng-view)

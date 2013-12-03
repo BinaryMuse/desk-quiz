@@ -1,0 +1,23 @@
+{{ auth | json }}
+{{ currentUser | json }}
+.row
+  .large-12.columns
+    %h1 Desk-Quiz
+    %h3.subheader
+      How's your front-end dev knowledge? Take our quiz and find out!
+    %hr
+.row
+  %form.large-7.large-centered.columns(name='authForm' ng-submit='login()')
+    .panel
+      %h4 Log in or register now to test your knowlege
+      %h4
+        %small Your account will be created automatically if it does not yet exist
+      .row
+        .large-12.columns
+          %input(type='email' placeholder='Email address' ng-model='auth.username' required)
+      .row
+        .large-12.columns
+          %input(type='password' placeholder='Password' ng-model='auth.password' required)
+      .row
+        .large-12.columns
+          %button.right(ng-class='{disabled: !authForm.$valid}') Log In/Register
