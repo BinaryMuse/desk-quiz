@@ -1,4 +1,5 @@
 DeskQuiz::Application.routes.draw do
+  get '/templates/*template' => 'templates#show', format: false
   root to: 'static#show'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
