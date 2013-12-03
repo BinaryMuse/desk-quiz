@@ -22,6 +22,11 @@ gem 'coffee-rails', '~> 4.0.0'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 1.2'
 
+group :development, :test do
+  gem 'jasminerice', :git => 'https://github.com/bradphelan/jasminerice.git'
+  gem 'jquery-rails' # necessary for jasminerice
+end
+
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
   gem 'sdoc', require: false
