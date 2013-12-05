@@ -5,6 +5,30 @@
 describe 'the deskquiz.quiz module', ->
   beforeEach module('deskquiz.quiz')
 
+  describe 'QuizController', ->
+    [$rootScope, $scope, currentUser, quiz, $controller] = [undefined]
+
+    beforeEach inject (_$rootScope_, _quiz_, _$controller_) ->
+      $rootScope = _$rootScope_
+      $scope = $rootScope.$new()
+      quiz = _quiz_
+      $controller = _$controller_
+      $controller('QuizController', $scope: $scope)
+
+    describe '#submitQuiz', ->
+      it 'sets the quiz on the scope', ->
+        expect($scope.quiz).toEqual(quiz)
+
+      it 'scrolls to the top of the page', inject ($window) ->
+        spyOn($window, 'scrollTo')
+        $scope.submitQuiz()
+        expect($window.scrollTo).toHaveBeenCalledWith(0, 0)
+
+      it 'puts the quiz in review mode', ->
+        expect(quiz.reviewing).toEqual(false)
+        $scope.submitQuiz()
+        expect(quiz.reviewing).toEqual(true)
+
   describe 'correctAnswerChosen', ->
     describe 'for a multiple choice question', ->
       [question] = [undefined]

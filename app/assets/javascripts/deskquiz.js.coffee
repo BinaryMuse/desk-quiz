@@ -19,3 +19,4 @@ app.config ($locationProvider, $routeProvider) ->
     controller: 'AuthenticationController'
   .when '/quiz',
     templateUrl: '/templates/quiz'
+    controller: 'QuizController'

@@ -1,5 +1,11 @@
 mod = angular.module 'deskquiz.quiz', []
 
+mod.controller 'QuizController', ($scope, $window, quiz) ->
+  $scope.quiz = quiz
+  $scope.submitQuiz = ->
+    $window.scrollTo(0, 0)
+    quiz.reviewing = true
+
 angularCode = """
 angular.module('myModule').service('myService', function() {
   var message = "Message one!"
