@@ -8,6 +8,10 @@ app.config ($httpProvider) ->
   authToken = $('meta[name="csrf-token"]').attr('content')
   $httpProvider.defaults.headers.common["X-CSRF-TOKEN"] = authToken
 
+# Disable SCE to simplify quiz layout
+app.config ($sceProvider) ->
+  $sceProvider.enabled(false)
+
 app.config ($locationProvider, $routeProvider) ->
   $locationProvider.html5Mode(true)
   $routeProvider.when '/',
