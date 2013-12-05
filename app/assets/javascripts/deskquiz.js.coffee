@@ -1,6 +1,7 @@
-#=require ./deskquiz.user
+#= require ./deskquiz.user
+#= require ./deskquiz.quiz
 
-app = angular.module 'deskquiz', ['ngRoute', 'deskquiz.user']
+app = angular.module 'deskquiz', ['ngRoute', 'deskquiz.user', 'deskquiz.quiz']
 
 # Rails CSRF protection
 app.config ($httpProvider) ->
