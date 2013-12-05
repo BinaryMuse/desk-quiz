@@ -1,3 +1,15 @@
 p.error {
   color: red;
 }
+
+ol.unbulleted, ul.unbulleted {
+  list-style: none;
+}
+
+.correct {
+  color: green;
+}
+
+.incorrect {
+  color: maroon;
+}

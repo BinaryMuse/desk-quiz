@@ -1,1 +1,28 @@
-quiz!
+.row
+  .large-6.columns
+    %h1 Desk Quiz
+    %hr
+  .large-6.columns(ng-controller='AuthenticationController')
+    %p.right
+      %a(href='#' ng-click='logout()') Logout {{currentUser.username}}
+.row(ng-if='quiz.reviewing')
+  %h2.subheader You scored {{quiz.questionsCorrect(quiz.questions)}} out of {{quiz.questions.length}}.
+.row
+  %ol
+    %li(ng-repeat='question in quiz.questions')
+      %p(ng-bind-html="question.text")
+      %ol.unbulleted(ng-if='question.type == "multiple_choice"')
+        %li(ng-repeat='answer in question.answers')
+          %input(type='radio' ng-model='question.input' value='{{$index}}' id='{{$parent.$index}}-{{$index}}' ng-disabled='quiz.reviewing')
+          %label(for='{{$parent.$index}}-{{$index}}') {{answer.text}}
+      %ol.unbulleted(ng-if='question.type == "fill_in_blank"')
+        %li(ng-repeat='answer in question.answers')
+          %input.large-4(type='text' ng-model='question.input[$index]' ng-disabled='quiz.reviewing')
+      %div(ng-show='quiz.reviewing')
+        %p.correct(ng-if='quiz.correctAnswerChosen(question)')
+          Correct!
+        %p.incorrect(ng-if='!quiz.correctAnswerChosen(question)')
+          Incorrect! The answer was: {{question.answerText}}
+        %p(ng-bind-html="question.explanation" ng-class='{incorrect: !quiz.correctAnswerChosen(question)}')
+.row(ng-hide='quiz.reviewing')
+  %button.button.right(ng-click="submitQuiz()") Submit Answers
